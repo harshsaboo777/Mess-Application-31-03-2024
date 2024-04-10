@@ -1,6 +1,6 @@
 import client from "../db.js";
 export const createUser = async (req, res) => {
-  const { Fname, Lname, Phone_num, Email, Password, User_address, User_type} = req.body;
+  const { Fname, Lname, Phone_num, Email, Password, User_address, User_type,lat ,log } = req.body;
   let exists;
   try {
     exists = await client.query(
@@ -17,10 +17,9 @@ export const createUser = async (req, res) => {
     let newUser;
     try {
       newUser = await client.query(
-        "INSERT INTO Users(Fname, Lname, Phone_num, Email, Password, User_address, User_type) VALUES ($1,$2,$3,$4,$5,$6,$7);",
-        [Fname, Lname, Phone_num, Email, Password, User_address, User_type]
+        "INSERT INTO Users(Fname, Lname, Phone_num, Email, Password, User_address, User_type, lat , log) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9);",
+        [Fname, Lname, Phone_num, Email, Password, User_address, User_type, lat, log]
       )
-
       newUser = await client.query("select * from Users where Email=$1 and Password=$2;",
       [
         Email,

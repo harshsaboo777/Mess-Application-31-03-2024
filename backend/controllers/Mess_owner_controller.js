@@ -5,7 +5,7 @@ export const View_mess_users = async (req, res) => {
     const {Mess_id} = req.body;
     let exists;
     try {
-      exists = await client.query("select Users.fname,Users.lname,Users.phone_num,Users.email,Users.user_address,Subscription.daily_tokens from subscription inner join Users on Users.User_id = Subscription.customer_id where subscription.Mess_id=$1",
+      exists = await client.query("select Users.fname,Users.lname,Users.phone_num,Users.email,Users.user_address,Subscription.daily_tokens , Subscription.remaining_token from subscription inner join Users on Users.User_id = Subscription.customer_id where subscription.Mess_id=$1",
       [Mess_id]);
     } catch (err) {
       console.log(err);
@@ -13,6 +13,24 @@ export const View_mess_users = async (req, res) => {
     console.log(exists.rows);
     res.status(200).send(exists.rows);
   };
+
+  export const update_address_mess = async (req, res) => {
+
+    const {User_id,lat,lng} = req.body;
+
+    let exists;
+    try {
+      exists = await client.query("UPDATE Users SET lat=$2, log=$3 where User_id=$1",
+      [
+        User_id,lat,lng 
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+     console.log(exists.rows);
+    res.status(200).send("Successfully Address Cordinates Updated");
+  };
+
 
 
   export const fetch_total_tokens = async (req, res) => {
@@ -152,11 +170,21 @@ export const View_mess_users = async (req, res) => {
   export const update_menu = async (req, res) => {
     const { User_id,newMenu} = req.body;
     let exists;
+
+    let temp="";
+    for(let i=0;i<newMenu.length;i++)
+    {
+      temp=temp+newMenu[i];
+      if(i===newMenu.length-2){temp+=" and ";}
+      else if(i!==newMenu.length-1){temp+=", ";}
+      else{temp+=".";}
+    }
+
     try
     {
       exists = await client.query("UPDATE Mess SET tiffin_details = $2 where mess_owner_id = $1",
       [
-        User_id,newMenu
+        User_id,temp
       ])
       res.status(200).send("Successfully Updated menu");
     }catch(err)
@@ -178,3 +206,7 @@ export const View_mess_users = async (req, res) => {
     console.log(exists.rows);
     res.status(200).send(exists.rows[0]);
   };
+
+
+
+  

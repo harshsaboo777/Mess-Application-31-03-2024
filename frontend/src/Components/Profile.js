@@ -21,32 +21,26 @@ function Profile() {
       .then((res) => {
         Update_name(res.data);
       });
-      
   };
-  // const update_address = ()=>{
-
-      
-  // navigator.geolocation.getCurrentPosition(
-  //   (position) => {
-  //     const { latitude, longitude } = position.coords;
-  //     const formattedLatitude = latitude.toPrecision(6);
-  //     const formattedLongitude = longitude.toPrecision(6);
-  //     setCoordinates({ latitude: formattedLatitude, longitude: formattedLongitude },);
-  //     console.log(
-  //       Browser Geolocation: Latitude: ${formattedLatitude}, Longitude: ${formattedLongitude},
-  //     );
-  //     alert("address_updated");
-  //   },
-  //   (error) => {
-  //     console.error('Error getting coordinates:', error.message);
-  //   },
-  //   { enableHighAccuracy: true,timeout: 5000, maximumAge: 0 }
-  // ); };
- 
+  
   useEffect(()=>{
     fetch_name();
   },[]);
 
+
+  const getCurrentPosition = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCoordinates({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+  
 
     return (
         <div >
@@ -62,8 +56,24 @@ function Profile() {
                 <div class="text">Email- {name.email}</div>
                 <div class="text">Address- {name.user_address}</div></div> 
                 <div class="profile">
-                    <button class="real" onClick={()=>{}} 
->Update Address </button>
+                   
+                <button class="real" onClick={() => {
+  getCurrentPosition();
+  if (coordinates) {
+    axios
+      .post("http://localhost:5000/Customer/update_address/", {
+        "User_id": User.User_id,
+        "lat": coordinates.lat,
+        "lng": coordinates.lng,
+      })
+      .then((res) => {
+        console.log(res.data);
+        alert("address Updated Successfully");
+      });
+  }
+}}>Update Address</button>
+
+
                 </div>
 
                 <div>

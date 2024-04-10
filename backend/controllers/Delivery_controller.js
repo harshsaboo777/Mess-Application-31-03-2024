@@ -56,13 +56,12 @@ export const fetch_hire_requests = async (req, res) => {
     const {Mess_id} = req.body;
     let exists;
     try {
-      exists = await client.query("select log,lat from users inner join mess on Users.User_id = mess.mess_owner_id where Mess_id=$1",
+      exists = await client.query("select lat , log from users inner join mess on Users.User_id = mess.mess_owner_id where Mess_id=$1",
       [Mess_id]);
     } catch (err) {
       console.log(err);
     }
-    console.log(exists.rows);
-    res.status(200).send(exists.rows);
+    res.status(200).send(exists.rows[0]);
   };
 
   export const fetch_mess_id = async (req, res) => {
@@ -71,7 +70,7 @@ export const fetch_hire_requests = async (req, res) => {
     let exists;
     try {
         // console.log("ckjsbsiucbsikjcbsjkcbsjbcjocbojsbcojbc"+ deliver_id);
-        exists = await client.query("select mess_id from mess where agent=$1",[deliver_id]);
+        exists = await client.query("select mess_id from Request where agent_id=$1",[deliver_id]);
         // console.log("ckjsbsiucbsikjcbsjkcbsjbcjocbojsbcojbc"+ exists.rows[0]);
       } catch (err) {
         console.log(err);
@@ -90,6 +89,6 @@ export const fetch_hire_requests = async (req, res) => {
     } catch (err) {
       console.log(err);
     }
-    // console.log("xsijbcisj/bcvisuocgsiocusbcioj"+exists.rows);
+   
     res.status(200).send(exists.rows);
   };

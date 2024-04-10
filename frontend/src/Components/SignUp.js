@@ -14,12 +14,16 @@ const SignUp = () => {
     User_address: "",
     Password: "",
     User_type: "",
+    lat:"",
+    log:""
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
     setuser({
       ...user,
       [name]: value,
+      "lat" : 22.225003,
+      "log" : 75.874180
     });
   };
 
@@ -39,7 +43,9 @@ const SignUp = () => {
       user.Phone_num !== "" &&
       user.Email !== "" &&
       user.Password !== ""&& 
-      user.User_type !== ""
+      user.User_type !== ""&&
+      user.lat !== "" &&
+      user.log !== ""
     ) {
        console.log(user);
       e.preventDefault();
@@ -146,12 +152,12 @@ const SignUp = () => {
                 name="submit"
                 onClick={handleSubmit}
               >
-                Login
+                Signup
               </button>
             </div>
             <p className={styles.loginregistertext}>
               Already have an account?{" "}
-              <button onClick={() => navigate("/login")}> Sign In</button>
+              <button onClick={() => navigate("/login")}> Login</button>
             </p>
           </div>
         </div>

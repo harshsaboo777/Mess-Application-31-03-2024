@@ -1,10 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { Container, Radio, Rating } from "./temp.js";
+import axios from "axios";
 
 const Ratings = (props) => {
-	const {rats} = props;
-	const [rate, setRate] = useState(rats);
+
+	const {User_id, mess_id} = props;
+	const [rate, setRate] = useState(0);
+
+	const give_rating = async (givenRating) => {
+
+          await axios
+            .post("http://localhost:5000/Customer/Rate_Mess/",
+            {
+              "User_id": User_id,
+			  "Mess_id": mess_id,
+			  "Rating": givenRating
+            }).then((res) => {
+              alert(res.data);
+            });
+        };
+
+	
 	return (
 		<Container>
 			{[...Array(5)].map((item, index) => {
@@ -16,6 +33,7 @@ const Ratings = (props) => {
 							value={givenRating}
 							onClick={() => {
 								setRate(givenRating);
+								give_rating(givenRating);
 							}}
 						/>
 						<Rating>

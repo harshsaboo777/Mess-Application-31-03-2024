@@ -115,6 +115,12 @@ export default function MessOwnersSubcribers() {
           >
             Delivery Agents
           </button>
+          <button
+            onClick={() => handleTabChange('Fewtokenuser')}
+            className={`px-6 py-3 rounded-tr-md rounded-br-md focus:outline-none ${activeTab === 'Fewtokenuser' ? 'bg-blue-500 text-white' : 'bg-cyan-100 text-gray-700'}`}
+          >
+            Few Tokens User
+          </button>
         </div>
         {activeTab === 'messSubscribers' && (
           <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
@@ -180,6 +186,29 @@ export default function MessOwnersSubcribers() {
 
           </button>):<BsClockHistory className="ml-8"/>}</td>
                 </tr>))}
+                {/* Add more rows as needed */}
+              </tbody>
+            </table>
+          </div>
+        )}
+         {activeTab === 'Fewtokenuser' && (
+          <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+            <h2 className="bg-cyan-400 text-xl font-bold text-gray-900 px-6 py-4 border-b border-gray-200 text-center">Few Tokens Left Users</h2>
+            <table className="w-full divide-y divide-cyan-200">
+              <thead className="bg-cyan-100 dark:bg-cyan-700">
+                <tr className="">
+                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider text-center">Customer Name</th>
+                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider text-center">Contact Number</th>
+                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider text-center">Remaining Tokens</th>
+                </tr>
+              </thead>
+              <tbody className="bg-cyan-100 divide-y divide-gray-200">
+                {mess_users.map((ele) => (<tr>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">{ele.fname } {ele.lname}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">+91 {ele.phone_num}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">{ele.remaining_token}</td>
+                </tr>))}
+                
                 {/* Add more rows as needed */}
               </tbody>
             </table>

@@ -1,5 +1,5 @@
 import express from "express";
-import {fetch_menu,update_menu,send_request,remove_agent,fetch_current_agent,fetch_agents,fetch_status,View_mess_users,fetch_total_tokens,Deduct_tokens,Mess_registration,fetch_mess_id,toggle_status} from "../controllers/Mess_owner_controller.js"
+import {fetch_menu,update_menu,send_request,remove_agent,fetch_current_agent,fetch_agents,fetch_status,View_mess_users,fetch_total_tokens,Deduct_tokens,Mess_registration,fetch_mess_id,toggle_status, update_address_mess} from "../controllers/Mess_owner_controller.js"
 const router = express.Router();
 
 router.post("/View_mess_users", View_mess_users);
@@ -15,5 +15,6 @@ router.post("/send_request",send_request);
 router.post("/remove_agent",remove_agent);
 router.post("/update_menu",update_menu);
 router.post("/fetch_menu",fetch_menu);
+router.post("/update_address_mess",update_address_mess);
 
 export default router;

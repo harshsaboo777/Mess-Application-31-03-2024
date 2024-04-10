@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 
 const DeliveryAgentDashboard = () => {
-  
     const cookies = new Cookies();
 const User_id = cookies.get("User").User_id;
 const navigate = useNavigate();

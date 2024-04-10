@@ -69,7 +69,6 @@ export const View_mess = async (req, res) => {
   export const Change_daily_tokens = async (req, res) => {
     const { customer_id,Mess_id,Daily_tokens} = req.body;
     let exists;
-console.log("loda");
     try
     {
       exists = await client.query("Select * from Subscription where customer_id=$1 and Mess_id=$2",
@@ -101,6 +100,7 @@ console.log("loda");
 
     const {User_id,Mess_id,Rating} = req.body;
     
+    console.log(User_id,Mess_id,Rating);
     let exists;
     try {
       exists = await client.query("Select * from Ratings where User_id = $1 and Mess_id = $2",
@@ -110,10 +110,17 @@ console.log("loda");
     } catch (err) {
       console.log(err);
     }
-
-    if(exists.rowCount!=0)
+    if(exists.rowCount!==0)
     {
-        res.status(500).send("Cannot Rate the same Mess multiple times");
+      try {
+            exists = await client.query("UPDATE ratings SET rating = $3 WHERE user_id=$1 and mess_id =$2;",
+            [
+                User_id,Mess_id,Rating 
+            ]);
+          } catch (err) {
+            console.log(err);
+          }
+      res.send("Updated Rating successfully!");
     }else
     {
         try {
@@ -124,19 +131,21 @@ console.log("loda");
           } catch (err) {
             console.log(err);
           }
+        res.status(200).send("Successfully Rated");
     }
-    res.status(200).send("Successfully Rated");
+    
   }
 
   export const View_mess_rating = async(req,res) => {
-    
+    const {Mess_id} = req.body;
     let exists;
     try {
-      exists = await client.query("Select mess_id,avg(rating) from Ratings group by mess_id");
+      exists = await client.query("Select count(user_id) as count,avg(rating) as average from Ratings group by mess_id having mess_id =  $1;",[Mess_id]);
     } catch (err) {
       console.log(err);
     }
-    res.status(200).send("Successfully Rated");
+    console.log(exists.rows[0]);
+    res.status(200).send(exists.rows[0]);
   }
 
   export const Update_profile = async (req, res) => {
@@ -194,3 +203,40 @@ console.log("loda");
   // daily tokens remaining tokens validity in subscription 
   // seperate rating table user id mess id rating 
    
+
+  // daily tokens remaining tokens validity in subscription 
+  // seperate rating table user id mess id rating 
+   
+
+  
+  export const fetch_new = async (req, res) => {
+
+    const {customer_id} = req.body;
+    let exists;
+    console.log(customer_id);
+    try {
+      exists = await client.query("select mess.mess_name, Subscription.remaining_token from Subscription inner join mess on subscription.mess_id=mess.mess_id where customer_id=$1 AND Subscription.remaining_token < 10 ",
+      [customer_id]);
+    } catch (err) {
+      console.log(err);
+    }
+    console.log(exists.rows);
+    res.status(200).send(exists.rows);
+  };
+
+  export const update_address = async (req, res) => {
+
+    const {User_id,lat,lng} = req.body;
+
+    let exists;
+    try {
+      exists = await client.query("UPDATE Users SET lat=$2, log=$3 where User_id=$1",
+      [
+        User_id,lat,lng 
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+     console.log(exists.rows);
+    res.status(200).send("Successfully Address Cordinates Updated");
+  };

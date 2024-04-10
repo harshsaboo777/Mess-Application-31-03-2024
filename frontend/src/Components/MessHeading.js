@@ -18,6 +18,7 @@ function MessHeading() {
   return (
     <>
     <Navbar />
+    
     <Slider {...settings}>
         
         <section class=" bg-center bg-no-repeat bg-[url('https://wallpapercave.com/wp/wp7845939.jpg')] bg-gray-600 bg-blend-multiply">

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, Marker, InfoWindow } from '@react-google-maps/api';
 import axios from 'axios';
 import Cookies from "universal-cookie";
-import { useNavigate } from "react-router-dom";
-
+import Navbar from './Navbar';
 
 const containerStyle = {
   width: '100%',
@@ -21,10 +20,12 @@ const DeliveryMap = () => {
   const [routeFetched, setRouteFetched] = useState(false);
   const [Mess_id, update_Mess_id] = useState(null);
   const [mess_users, update_mess_users] = useState([]);
-  const [showRoute, setShowRoute] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const[mess_loc, update_mess_loc]= useState([]);
+
+
   const cookies = new Cookies();
   let deliver_id = cookies.get("User").User_id;
-  
 
   const fetch_mess_id = async () => {
     await 
@@ -53,9 +54,21 @@ const DeliveryMap = () => {
       })
       .then((res) => {
         update_mess_users(res.data)
+        console.log(res.data);
       });
   };
 
+  const fetch_mess_loc = async()=> {
+    await axios
+      .post("http://localhost:5000/Delivery_boy/fetch_mess_loc/",
+        {
+          "Mess_id": Mess_id.id
+        })
+      .then((res) => {
+        console.log(res.data);
+        update_mess_loc(res.data);
+      });
+  }
 
   useEffect(() => {
     fetch_mess_id();
@@ -64,22 +77,62 @@ const DeliveryMap = () => {
   useEffect(() => {
     if (Mess_id) {
       fetch_mess_users();
+      fetch_mess_loc();
     }
   }, [Mess_id]);
 
-  useEffect(() => {
-    setWaypoints(mess_users.map(user => ({ location: { lat: parseFloat(user.lat), lng: parseFloat(user.log) }, stopover: false })));
-  }, [mess_users]);
 
   useEffect(() => {
-    setWaypoints();
-  }, []);
+    if (mess_users.length > 0) {
+      const usersAsWaypoints = mess_users.map(user => ({
+        location: { lat: parseFloat(user.lat), lng: parseFloat(user.log) },
+        stopover: false,
+        id: user.id
+      }));
+      const sortedWaypoints = sortWaypoints(usersAsWaypoints);
+     // const lastWaypoint = sortedWaypoints.pop();
+      setWaypoints(sortedWaypoints);
+     
+    }
+  }, [mess_users]);
+
+  function sortWaypoints(waypoints) {
+    const sortedWaypoints = [waypoints[0]];
+    const remainingWaypoints = waypoints.slice(1);
+
+    while (remainingWaypoints.length > 0) {
+      let closestWaypointIndex;
+      let closestWaypointDistance = Infinity;
+
+      for (let i = 0; i < remainingWaypoints.length; i++) {
+        const distance = getDistance(
+          sortedWaypoints[sortedWaypoints.length - 1].location,
+          remainingWaypoints[i].location
+        );
+
+        if (distance < closestWaypointDistance) {
+          closestWaypointIndex = i;
+          closestWaypointDistance = distance;
+        }
+      }
+
+      sortedWaypoints.push(remainingWaypoints[closestWaypointIndex]);
+      remainingWaypoints.splice(closestWaypointIndex, 1);
+    }
+
+    return sortedWaypoints.map(({ location, stopover }) => ({ location, stopover }));
+  }
+
+  function getDistance(location1, location2) {
+    const latDiff = location1.lat - location2.lat;
+    const lngDiff = location1.lng - location2.lng;
+    return Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
+  }
 
   const directionsCallback = (response) => {
     if (response !== null) {
       if (response.status === 'OK') {
         setResponse(response);
-        setRouteFetched(true);
       } else {
         console.log('response: ', response)
       }
@@ -87,26 +140,30 @@ const DeliveryMap = () => {
   }
 
   const handleOnClick = () => {
-    if (!routeFetched) {
-      setRouteFetched(true);
-    }
+    setRouteFetched(true);
+    setResponse(null);
+
+    console.log(waypoints);
+
   }
 
   return (
+    <section>
+      <Navbar/>
     <LoadScript
-      googleMapsApiKey=""
-    >
+      googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+    > 
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
         zoom={13.5}
-      >
+      > 
         {
-          routeFetched && (
+          routeFetched && response === null && (
             <DirectionsService
               options={{
-                destination: center,
-                origin: center,
+                destination: { lat: parseFloat(mess_loc.lat), lng: parseFloat(mess_loc.log) },
+                origin: { lat: parseFloat(mess_loc.lat), lng: parseFloat(mess_loc.log) },
                 travelMode: 'DRIVING',
                 waypoints: waypoints
               }}
@@ -114,7 +171,7 @@ const DeliveryMap = () => {
             />
           )
         }
-
+  
         {
           response !== null && (
             <DirectionsRenderer
@@ -124,9 +181,52 @@ const DeliveryMap = () => {
             />
           )
         }
+  
+        <Marker
+          key={mess_loc.id}
+          position={{ lat: parseFloat(mess_loc.lat), lng: parseFloat(mess_loc.log) }}
+          icon={{
+            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+          }}
+          onClick={() => {
+            setSelectedUser({ fname: 'mess happy' });
+          }}
+        />
+  
+        {
+          mess_users.map(user => (
+            <Marker
+              key={user.id}
+              position={{ lat: parseFloat(user.lat), lng: parseFloat(user.log) }}
+              onClick={() => {
+                setSelectedUser(user);
+              }}
+            />
+          ))
+        }
+  
+        {
+          selectedUser && (
+            <InfoWindow
+              position={{ lat: parseFloat(selectedUser.lat || mess_loc.lat), lng: parseFloat(selectedUser.log || mess_loc.log) }}
+              onCloseClick={() => {
+                setSelectedUser(null);
+              }}
+            >
+              <div>
+                <h2>{selectedUser.fname}</h2>
+              </div>
+            </InfoWindow>
+          )
+        }
       </GoogleMap>
-      <button onClick={handleOnClick}>Show Route</button>
-    </LoadScript>
+      
+      <button onClick={handleOnClick} style={{backgroundColor: 'blue', color: 'white', padding: '5px 10px', fontSize: '12px'}}>
+  Show Route
+</button>
+
+      
+    </LoadScript></section>
   )
 }
 
