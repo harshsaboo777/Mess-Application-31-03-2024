@@ -61,7 +61,7 @@ function Navbar() {
       navigate("/tiffin")
     }else if(User.User_type==2)
     {
-      navigate("/UserSubscriptionPa?ge")
+      navigate("/delivery")
     }else if(User.User_type==3)
     {
       navigate("/mess")

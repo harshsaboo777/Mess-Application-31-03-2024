@@ -40,6 +40,7 @@ function UserSubscriptionPage() {
                 {subscribed_mess.map(ele => (
                     <ItemCard2
                     
+                    User_id={cookies.get("User").User_id}
                     image={"https://pluspng.com/img-png/veg-thali-png-exotic-tastes-of-india-from-thali-to-tandoori-484.png"}
                     name={ele.mess_name}
                     tiffin_details={ele.tiffin_details}

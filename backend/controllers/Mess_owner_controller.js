@@ -152,11 +152,21 @@ export const View_mess_users = async (req, res) => {
   export const update_menu = async (req, res) => {
     const { User_id,newMenu} = req.body;
     let exists;
+
+    let temp="";
+    for(let i=0;i<newMenu.length;i++)
+    {
+      temp=temp+newMenu[i];
+      if(i===newMenu.length-2){temp+=" and ";}
+      else if(i!==newMenu.length-1){temp+=", ";}
+      else{temp+=".";}
+    }
+
     try
     {
       exists = await client.query("UPDATE Mess SET tiffin_details = $2 where mess_owner_id = $1",
       [
-        User_id,newMenu
+        User_id,temp
       ])
       res.status(200).send("Successfully Updated menu");
     }catch(err)
