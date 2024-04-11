@@ -40,7 +40,7 @@
 .container .logintext {
   color: #111;
   font-weight: 500;
-  font-size: 2.1rem;
+  font-size: 1.5rem;
   text-align: center;
   margin-bottom: 20px;
   display: block;
@@ -101,7 +101,7 @@
   height: 100%;
   border: 2px solid #e7e7e7;
   padding: 15px 20px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   border-radius: 30px;
   background: transparent;
   outline: none;
@@ -109,14 +109,15 @@
 
 .container .loginemail .inputgroup {
   width: 100%;
-  height: 50px;
-  margin-bottom: 25px;
+  height: 38px;
+  margin-bottom: 15px;
 }
 
 
 input::placeholder {
   opacity: 0.5;
   color: black;
+  font-size: 0.8rem;
 }
 
 
@@ -128,7 +129,7 @@ input::placeholder {
 .container .loginemail .inputgroup .btn {
   display: block;
   width: 100%;
-  padding: 15px 20px;
+  padding: 5px 10px;
   text-align: center;
   border: none;
   background: #d19c97;
@@ -152,7 +153,7 @@ input::placeholder {
 
 @media (max-width: 430px) {
   .container {
-    width: 180px;
+    /* width: 180px; */
   }
 
   .container .loginsocial {

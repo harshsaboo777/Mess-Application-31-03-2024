@@ -37,11 +37,11 @@ const Ratings = (props) => {
 							}}
 						/>
 						<Rating>
-							<FaStar
+							<FaStar size={20}
 								color={
 									givenRating < rate || givenRating === rate
 										? "gold"
-										: "white"
+										: "silver"
 								}
 							/>
 						</Rating>

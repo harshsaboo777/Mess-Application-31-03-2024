@@ -53,7 +53,7 @@ function Profile() {
             <Navbar/>
             <div className="hover:text-gray-200 ">
                 <div class="images">
-                        <img src="../images/img.jpeg"/>
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNrK36yrCd6DHKFr-x1dFrkk-49JBODBCBAjwBMZ4hCw2pzBRjpNH8K4Su7nu0cn-KeEkdwno3ELx9izvdJn3zIyR1zaVk7HaZvprBRQQOWMwkVtlKdWi-aieK56NrFyDBtpS1wOw1p0Y/s1600/Gaurav+sharma+Indian+Models+Fashion+Photographer09.jpg"/>
                 </div>
                
                 <div>

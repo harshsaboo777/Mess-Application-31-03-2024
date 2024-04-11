@@ -59,13 +59,13 @@ function MessTiffins() {
   return (
     <div className="bg-cyan-600">
       <MessHeading />
-      <section className="mb-5 mt-10 max-w-screen-xl mx-auto px-6">
+      <section className="mb-5 mt-7 max-w-screen-xl mx-auto px-6">
             {/* food Menu tab  */}
             <div className="flex items-center justify-center space-x-6">
             </div>
 
             {/* all foods  */}
-            <div className="flex mb-4">
+            <div className="flex mb-1 h-8">
         <input
           type="text"
           placeholder="Search for a mess..."
@@ -78,17 +78,19 @@ function MessTiffins() {
             onClick={handleClearSearch}
             className="bg-gray-200 text-gray-600 hover:text-gray-800 focus:outline-none  px-2 py-2"
           >
-            <XIcon className="h-5 w-5" />
+            <XIcon className="h-3 w-3" />
           </button>
         )}
         <button
           onClick={handleSearch}
-          className="border border-gray-300 bg-blue-500 text-white font-semibold px-4 py-2 rounded-r-md focus:outline-none"
+          className="flex items-center justify-center border border-gray-300 bg-blue-500 text-white text-xs font-semibold px-2 py-2 rounded-r-md focus:outline-none"
         >
           Search
         </button>
       </div>
-            <div className="slider-container">
+
+
+      <div className="slider-container">
               
       <Slider {...settings}>
         

@@ -38,8 +38,8 @@ export default function UpdateDailyTokens(props) {
   return (
     <>
       <Button
-      className="ml-3 text-xl inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-cyan-700 hover:bg-cyan-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-cyan-900 font-bold"
-      onClick={handleOpen}>Update Daily Tokens</Button>
+      className="ml-3 text-xl inline-flex justify-center items-center py-2 px-4 text-xs font-medium text-center text-white rounded-base bg-cyan-700 hover:bg-cyan-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-cyan-900 font-bold"
+      onClick={handleOpen}>Update</Button>
       <Dialog open={open} handler={handleOpen}>
 
         {/* <div className="flex px-10 py-2 space-x-3 ">

@@ -33,10 +33,10 @@ function UserSubscriptionPage() {
   return (
     <div className="bg-cyan-600">
       <MessHeading />
-      <section className="my-3 max-w-screen-2xl mx-auto px-6">
+      <section className="my-1 max-w-screen-2xl mx-auto px-6">
             <div className="flex items-center justify-center space-x-6">
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
                 {subscribed_mess.map(ele => (
                     <ItemCard2
                     

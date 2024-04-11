@@ -133,11 +133,10 @@ const SignUp = () => {
                 required
               />
             </div>
-
             <div className="my-5">
-            <input className="mx-3.5" type="radio" value={1} name="Customer" onChange={handleChangetype} checked={user.User_type === "1"}/> Customer
-            <input className="mx-3.5" type="radio" value={2} name="Delivery Agent" onChange={handleChangetype} checked={user.User_type === "2"}/> Delivery Agent
-            <input className="mx-3.5" type="radio" value={3} name="Mess Owner" onChange={handleChangetype} checked={user.User_type === "3"}/> Mess Owner
+            <span className="text-xs"><input className="mx-1" type="radio" value={1} name="Customer" onChange={handleChangetype} checked={user.User_type === "1"}/> Customer</span>
+            <span className="text-xs"><input className="mx-1" type="radio" value={2} name="Delivery Agent" onChange={handleChangetype} checked={user.User_type === "2"}/> Delivery Agent</span>
+            <span className="text-xs"><input className="mx-1" type="radio" value={3} name="Mess Owner" onChange={handleChangetype} checked={user.User_type === "3"}/> Mess Owner</span>            
             </div>
             
             <div className={styles.inputgroup}>
