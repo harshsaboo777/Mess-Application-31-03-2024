@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Cookies from 'universal-cookie';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,9 +9,14 @@ import MessHeading from "./MessHeading";
 import Footer from "./Footer";
 import "../ComponentStyles/messTiffins.css";
 import { XIcon } from '@heroicons/react/solid';
+import { BiSolidMapPin } from "react-icons/bi";
 
 
 function MessTiffins() {
+
+  const cookies = new Cookies();
+  const user_id = cookies.get("User").User_id;
+
   const settings = {
     // autoplay:true,
     // autoplaySpeed: 2000,
@@ -27,14 +33,25 @@ function MessTiffins() {
   const [tiffin, set_tiffin] = useState([]);
   const [filteredMessList, setFilteredMessList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [location_filter,set_location_filter] = useState(0);
   const fetchMess = async (e) => {
     await axios
-      .post("http://localhost:5000/Customer/View_mess/")
+      .post("https://apnamess-11-04-24-1.onrender.com/Customer/View_mess/")
       .then((res) => {
         set_tiffin(res.data);
       });
   };
 
+  const fetchNearbyMess = async(e) => {
+    await axios
+      .post("https://apnamess-11-04-24-1.onrender.com/Customer/fetchNearbyMess/",
+      {
+        "user_id": user_id 
+      })
+      .then((res) => {
+        setFilteredMessList(res.data);
+      });
+  }
   useEffect(() => {
 		fetchMess();
 	}, []);
@@ -54,18 +71,24 @@ function MessTiffins() {
 
   const handleClearSearch = () => {
     setSearchTerm('');
+    set_location_filter(0);
     setFilteredMessList(tiffin);
   };
+
+  const handlleclick34=()=>{
+    set_location_filter(1);
+    fetchNearbyMess();
+  }
   return (
     <div className="bg-cyan-600">
       <MessHeading />
-      <section className="mb-5 mt-10 max-w-screen-xl mx-auto px-6">
+      <section className="mb-5 mt-7 max-w-screen-xl mx-auto px-6">
             {/* food Menu tab  */}
             <div className="flex items-center justify-center space-x-6">
             </div>
 
             {/* all foods  */}
-            <div className="flex mb-4">
+            <div className="flex mb-1 h-8">
         <input
           type="text"
           placeholder="Search for a mess..."
@@ -73,22 +96,30 @@ function MessTiffins() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border border-gray-300 rounded-l-md px-4 py-2 w-full focus:outline-none"
         />
-        {searchTerm && ( // Display cross icon only when search term is not empty
+        {(searchTerm ||location_filter) ? ( // Display cross icon only when search term is not empty
           <button
             onClick={handleClearSearch}
             className="bg-gray-200 text-gray-600 hover:text-gray-800 focus:outline-none  px-2 py-2"
           >
-            <XIcon className="h-5 w-5" />
+            <XIcon className="h-3 w-3" />
           </button>
-        )}
+        ):null}
         <button
           onClick={handleSearch}
-          className="border border-gray-300 bg-blue-500 text-white font-semibold px-4 py-2 rounded-r-md focus:outline-none"
+          className="flex items-center justify-center border border-gray-300 bg-blue-500 text-white text-xs font-semibold px-2 py-2 focus:outline-none"
         >
           Search
         </button>
+        <button
+          onClick={handlleclick34}
+          className="flex items-center justify-center border border-gray-300 bg-orange-400 text-white text-xs font-semibold px-2 py-2 rounded-r-md focus:outline-none"
+        >
+          <BiSolidMapPin style = {{ color: "dodgerblue", fontSize: "1.2rem" }}/>
+        </button>
       </div>
-            <div className="slider-container">
+
+
+      <div className="slider-container">
               
       <Slider {...settings}>
         

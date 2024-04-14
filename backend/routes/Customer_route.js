@@ -1,5 +1,5 @@
 import express from "express";
-import {View_mess, View_mess_rating,Subscribe_mess, Remaining_Daily_tokens, Change_daily_tokens,View_subscribed_mess, Rate_Mess, Update_profile, filter_mess, fetch_profile,update_address, fetch_new} from "../controllers/Customer_controller.js" 
+import {View_mess, View_mess_rating,Subscribe_mess, Remaining_Daily_tokens, Change_daily_tokens,View_subscribed_mess, Rate_Mess, Update_profile, filter_mess, fetch_profile,update_address, fetch_new, fetchNearbyMess} from "../controllers/Customer_controller.js" 
 const router = express.Router();
 
 router.post("/View_mess", View_mess);
@@ -14,4 +14,6 @@ router.post("/update_address", update_address);
 router.post("/View_subscribed_mess",View_subscribed_mess);
 router.post("/View_mess_rating", View_mess_rating);
 router.post("/fetch_new",fetch_new);
+router.post("/update_address",update_address);
+router.post("/fetchNearbyMess",fetchNearbyMess);
 export default router

@@ -5,49 +5,42 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+
 function Profile() {
 
   const cookies = new Cookies();
   const User = cookies.get("User");
   const [name, Update_name] = useState([]);
-  
-  const [coordinates, setCoordinates] = useState(null);
-
+ 
+  const navigate = useNavigate();
   const fetch_name = async (e) => {
     await axios
-      .post("http://localhost:5000/Customer/fetch_profile/",{
+      .post("https://apnamess-11-04-24-1.onrender.com/Customer/fetch_profile/",{
         "User_id" :User.User_id,
       })
       .then((res) => {
         Update_name(res.data);
       });
+      
   };
   
+ 
+  function update_address (){
+    navigate("/Updateaddress");
+};
+
+ 
   useEffect(()=>{
     fetch_name();
   },[]);
 
-
-  const getCurrentPosition = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setCoordinates({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      });
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  };
-  
 
     return (
         <div >
             <Navbar/>
             <div className="hover:text-gray-200 ">
                 <div class="images">
-                        <img src="../images/img.jpeg"/>
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNrK36yrCd6DHKFr-x1dFrkk-49JBODBCBAjwBMZ4hCw2pzBRjpNH8K4Su7nu0cn-KeEkdwno3ELx9izvdJn3zIyR1zaVk7HaZvprBRQQOWMwkVtlKdWi-aieK56NrFyDBtpS1wOw1p0Y/s1600/Gaurav+sharma+Indian+Models+Fashion+Photographer09.jpg"/>
                 </div>
                
                 <div>
@@ -56,24 +49,9 @@ function Profile() {
                 <div class="text">Email- {name.email}</div>
                 <div class="text">Address- {name.user_address}</div></div> 
                 <div class="profile">
-                   
-                <button class="real" onClick={() => {
-  getCurrentPosition();
-  if (coordinates) {
-    axios
-      .post("http://localhost:5000/Customer/update_address/", {
-        "User_id": User.User_id,
-        "lat": coordinates.lat,
-        "lng": coordinates.lng,
-      })
-      .then((res) => {
-        console.log(res.data);
-        alert("address Updated Successfully");
-      });
-  }
-}}>Update Address</button>
-
-
+                <button class="real" onClick={
+  update_address
+}>Update Address</button>
                 </div>
 
                 <div>
@@ -138,3 +116,6 @@ function Profile() {
     );
  }
 export default Profile;
+
+
+

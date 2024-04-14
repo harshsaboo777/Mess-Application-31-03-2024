@@ -34,7 +34,7 @@ const MessRegistration = () => {
       mess.mess_owner_id=user_id;
       e.preventDefault();
       axios
-        .post("http://localhost:5000/Mess_owner/Mess_registration",mess)
+        .post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/Mess_registration",mess)
         .then((res) => {
           alert(res.data);
           navigate("/login");

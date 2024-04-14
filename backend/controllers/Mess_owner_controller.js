@@ -16,20 +16,28 @@ export const View_mess_users = async (req, res) => {
 
   export const update_address_mess = async (req, res) => {
 
-    const {User_id,lat,lng} = req.body;
+    const {User_id,lat,lng,address} = req.body;
 
     let exists;
     try {
-      exists = await client.query("UPDATE Users SET lat=$2, log=$3 where User_id=$1",
+      exists = await client.query("UPDATE Users SET lat=$2, log=$3 where User_id=$1  ",
       [
-        User_id,lat,lng 
+        User_id,lat,lng
       ]);
-    } catch (err) {
+    
+    await client.query("UPDATE mess SET mess_address=$2 WHERE  mess_owner_id=$1",
+    [
+      User_id,address
+    ]);
+  }
+    catch (err) {
       console.log(err);
     }
      console.log(exists.rows);
-    res.status(200).send("Successfully Address Cordinates Updated");
+    res.status(200).send("Successfully Address Updated");
   };
+
+  
 
 
 

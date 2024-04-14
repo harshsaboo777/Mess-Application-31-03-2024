@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { LocationMarkerIcon } from '@heroicons/react/outline';
+import { useNavigate } from "react-router-dom";
 
 const ProfileMess = () => {
   const cookies = new Cookies();
@@ -15,11 +16,11 @@ const ProfileMess = () => {
   const tags = ['Rice', '4 Chapatis','5 Chapatis', 'Dal', 'Mix Vegetable', 'Curry','Paneer dish','Mouth Freshner', 'Gulab Jamun','Salad','Pickle','Seasonal veg']; 
   const [inputValue, setInputValue] = useState('');
   const [reviewcount,setreviewcount] = useState(0);
-  const [coordinates, setCoordinates] = useState(null);
+  const navigate = useNavigate();
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/Customer/fetch_profile', {
+      const res = await axios.post('https://apnamess-11-04-24-1.onrender.com/Customer/fetch_profile', {
         User_id: User.User_id,
       });
       setProfile(res.data);
@@ -30,7 +31,7 @@ const ProfileMess = () => {
 
   const fetchRating = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/Customer/View_mess_rating',{
+      const res = await axios.post('https://apnamess-11-04-24-1.onrender.com/Customer/View_mess_rating',{
         Mess_id: Mess_id,
       });
       setrating(+res.data.average);
@@ -43,7 +44,7 @@ const ProfileMess = () => {
 
   const fetchMenu = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/Mess_owner/fetch_menu', {
+      const res = await axios.post('https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_menu', {
         User_id: User.User_id,
       });
       setMenu(res.data.tiffin_details);
@@ -51,23 +52,14 @@ const ProfileMess = () => {
       console.error('Error fetching menu:', error);
     }
   };
-  
-  const getCurrentPosition = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setCoordinates({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      });
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
+
+  function updateAddress (){
+      navigate("/Updateaddress");
   };
 
   const updateMenu = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/Mess_owner/update_menu', {
+      const res = await axios.post('https://apnamess-11-04-24-1.onrender.com/Mess_owner/update_menu', {
         User_id: User.User_id,
         newMenu: selectedTags,
       });
@@ -82,7 +74,7 @@ const ProfileMess = () => {
     // console.log("messssss"+User_id);
     await 
     axios
-      .post("http://localhost:5000/Mess_owner/fetch_mess_id/",
+      .post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_mess_id/",
       {
         "User_id":User.User_id
       })
@@ -131,22 +123,22 @@ const ProfileMess = () => {
   return (
     <div className="bg-cyan-200 min-h-screen">
       <Navbar />
-      <div className="container mx-auto py-8">
+      <div className="container mx-auto py-5">
         <div className="bg-cyan-50 shadow-lg rounded-lg p-8">
-          <div className="flex items-center justify-center mb-6">
+          <div className="flex items-center justify-center mb-3">
             <img
               src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNrK36yrCd6DHKFr-x1dFrkk-49JBODBCBAjwBMZ4hCw2pzBRjpNH8K4Su7nu0cn-KeEkdwno3ELx9izvdJn3zIyR1zaVk7HaZvprBRQQOWMwkVtlKdWi-aieK56NrFyDBtpS1wOw1p0Y/s1600/Gaurav+sharma+Indian+Models+Fashion+Photographer09.jpg"
               alt="Profile Picture"
               className="h-24 w-24 rounded-full object-cover mr-4"
             />
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">{profile.fname} Mess</h2>
+              <h2 className="text-xl font-bold text-gray-800">{profile.fname} Mess</h2>
               <p className="text-gray-600">{profile.email}</p>
             </div>
             
           </div>
           <div className="items-center gap-2 text-blue-gray-500">
-      <ul className="flex justify-center m-5">
+      <ul className="flex justify-center">
   <li>
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -217,40 +209,31 @@ const ProfileMess = () => {
         d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
     </svg>
   </li>
-  <div color="blue-gray" className="ml-1 text-blue-gray-500">
+  
+</ul>
+<div color="blue-gray" className="flex justify-center text-blue-gray-500 mb-5 mt-1" style={{fontSize : '0.6rem'}}>
         (Based on {reviewcount} Reviews)
       </div>
-</ul>
       
     </div>
-          <div className='flex items-center justify-center'><button class="real" onClick={() => {
-  getCurrentPosition();
-  if (coordinates) {
-    // axios
-    //   .post("http://localhost:5000/Customer/update_address_mess/", {
-    //     "User_id": User.User_id,
-    //     "lat": coordinates.lat,
-    //     "lng": coordinates.lng,
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     alert("address Updated Successfully");
-    //   }); if this is enable address will get update.
-    alert("address Updated Successfully");
-  }
-}}>Update Address</button></div>
+          <div className='flex items-center justify-center'><button className=""
+              onClick={updateAddress}
+              class="bg-green-400 text-white py-1 px-3 rounded-md  hover:bg-blue-600 flex items-center justify-center text-xs ">
+              <LocationMarkerIcon className="h-5 w-5 mr-2 text-red-500" />
+              Update Address
+            </button></div>
           
           <div className="mb-6 text-center">
             
           </div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Contact Information</h3>
-            <p className="text-gray-600">Contact: {profile.phone_num}</p>
-            <p className="text-gray-600">Address: {profile.user_address}</p>
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-gray-800 mb-2">Contact Information</h3>
+            <p className="text-xs text-gray-600">Contact: {profile.phone_num}</p>
+            <p className="text-xs text-gray-600">Address: {profile.user_address}</p>
           </div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Current Mess Menu</h3>
-            <p className="text-gray-600">{menu}</p>
+          <div className="mb-3">
+            <h3 className="text-sm font-semibold text-gray-800 mb-2">Current Mess Menu</h3>
+            <p className="text-xs text-gray-600">{menu}</p>
             
             {/* <input
               type="text"
@@ -259,12 +242,12 @@ const ProfileMess = () => {
               placeholder="Enter new menu details"
               className="w-full py-2 px-4 rounded-md border border-cyan-300 mt-2 focus:outline-none focus:border-blue-500"
             /> */}
-            <div className="p-4">
+            <div className="p-2 mt-2">
       <div className="flex flex-wrap justify-center">
         {tags.map((tag, index) => (
           <div
             key={index}
-            className={`m-2 px-4 py-2 rounded-full cursor-pointer ${
+            className={`text-xs m-1 px-2 py-1 rounded-full cursor-pointer ${
               selectedTags.includes(tag) ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'
             }`}
             onClick={() => handleTagClick(tag)}
@@ -272,39 +255,42 @@ const ProfileMess = () => {
             {tag}
           </div>
         ))}
+        <div className="flex">
+        </div>
         <input
           type="text"
-          className="m-2 px-4 py-2 rounded-md bg-gray-300 border border-gray-300 p-2 ml-10 mr-1"
+          className="text-xs mt-4 px-2 py-1 rounded-md bg-gray-300 border border-gray-300 p-1"
           // placeholder="Enter Item"
           value={inputValue}
           onChange={handleInputChange}
         />
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white m-2 ml-0 px-4 py-2 rounded-md"
-          onClick={handleInputKeyPress}
-        >
-          Add Item
-        </button>
+        
       </div>
       
       <div className="mt-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Selected items:</h3>
-        <ul className='text-gray-600'>
+        
+        <ul className='text-xs text-gray-600'>
           {selectedTags.map((tag, index) => (
             <span key={index}>{tag},  </span>
           ))}
           
         </ul>
       </div>
-      
-    </div>
-
-            <button
+      <button
+          className="text-xs bg-blue-500 hover:bg-blue-600 text-white m-3 px-2 py-2 rounded-md"
+          onClick={handleInputKeyPress}
+        >
+          Add Item
+        </button>
+        <button
               onClick={updateMenu}
-              className="bg-blue-500 text-white m-3 py-2 px-4 rounded-md mt-2 hover:bg-blue-600"
+              className="text-xs bg-orange-300 text-white m-3 py-2 px-3 rounded-md hover:bg-blue-600"
             >
               Update Menu
             </button>
+    </div>
+
+            
           </div>
         </div>
       </div>

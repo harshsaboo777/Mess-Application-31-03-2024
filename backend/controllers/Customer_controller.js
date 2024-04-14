@@ -31,19 +31,32 @@ export const View_mess = async (req, res) => {
 
   export const Subscribe_mess = async (req, res) => {
     const { customer_id, Mess_id, Remaining_token,subscription_validity} = req.body;
-    // INSERT INTO TableName (DateColumn) VALUES (CURRENT_DATE);
 
     let exists;
-
     try {
+      exists = await client.query("Select * from Subscription where customer_id = $1 and Mess_id = $2",
+      [
+        customer_id,Mess_id
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+    
+    if(exists.rowCount!==0)
+    {
+      res.send("Cannot Subscribe same mess multiple times.");
+    }else
+    {
+        try {
       exists = await client.query("INSERT INTO Subscription(customer_id,Mess_id,Remaining_token,subscription_validity,Daily_tokens,Subscription_date) VALUES($1,$2,$3,$4,1,CURRENT_DATE);", [
-        customer_id, Mess_id, Remaining_token,subscription_validity
+      customer_id, Mess_id, Remaining_token,subscription_validity
       ]);
     } catch (err) {
       console.log(err);
     }
     console.log(exists.rows);
     res.status(200).send("Successfully Subscribed!");
+    }
   };
   
   // use to alert user that subscription is about to end 
@@ -207,6 +220,29 @@ export const View_mess = async (req, res) => {
   // daily tokens remaining tokens validity in subscription 
   // seperate rating table user id mess id rating 
    
+  export const fetchNearbyMess = async(req,res) => {
+    
+    const {user_id} = req.body;
+    let exists;
+    let lat1,log1;
+    
+    try{
+    exists = await client.query("select lat as lat1, log as log1 from users where user_id = $1    ",[user_id]);
+    lat1 = exists.rows[0].lat1;
+    log1 = exists.rows[0].log1;
+    }catch(err){
+
+      console.log(err);
+    }
+
+    try{
+    exists = await client.query("SELECT * FROM mess INNER JOIN users ON mess.mess_owner_id = users.user_id WHERE (($1 - CAST(users.lat AS FLOAT)) * ($1 - CAST(users.lat AS FLOAT)) + ($2 - CAST(users.log AS FLOAT)) * ($2 - CAST(users.log AS FLOAT)))  < 0.027*0.027 ;",[lat1,log1]);
+    }catch(err){
+      console.log(err);
+    }
+    
+    res.status(200).send(exists.rows);
+  }
 
   
   export const fetch_new = async (req, res) => {
@@ -226,13 +262,13 @@ export const View_mess = async (req, res) => {
 
   export const update_address = async (req, res) => {
 
-    const {User_id,lat,lng} = req.body;
+    const {User_id,lat,lng,user_address} = req.body;
 
     let exists;
     try {
-      exists = await client.query("UPDATE Users SET lat=$2, log=$3 where User_id=$1",
+      exists = await client.query("UPDATE Users SET lat=$2, log=$3, user_address=$4 where user_id=$1",
       [
-        User_id,lat,lng 
+        User_id,lat,lng,user_address
       ]);
     } catch (err) {
       console.log(err);

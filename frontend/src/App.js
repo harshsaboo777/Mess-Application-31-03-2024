@@ -12,6 +12,8 @@ import ContactUs from './Components/ContactUs';
 import DeliveryDashboard from './Components/DeliveryDashboard';
 import Profilemess from "./Components/Profilemess";
 import DeliveryMap from "./Components/DeliveryMap";
+import UpdateAddress from "./Components/UpdateAddress";
+import UpdateAddressmess from "./Components/UpdateAddressmess";
 
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
         <Route path="/MessRegistration" element={<MessRegistration/>}/>
         <Route path="/DeliveryMapPage" element={<DeliveryMap/>}/>
         <Route path="/profilemess" element={<Profilemess/>}/>
+        <Route path="/Updateaddress" element={<UpdateAddress/>}/>
+        <Route path="/Updateaddressmess" element={<UpdateAddressmess/>}/>
       </Routes>
     </BrowserRouter>
     </div>

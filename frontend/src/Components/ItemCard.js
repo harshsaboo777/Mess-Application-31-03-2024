@@ -12,16 +12,16 @@ function ItemCard(props) {
 
   return (
 
-    <div className="ml-4 mr-4 mt-10 bg-cyan-50 border border-gray-100 transition transform duration-700 hover:shadow-xl hover:scale-105 p-4 rounded-lg relative">
+    <div className="ml-1 mr-1 mt-5 bg-cyan-50 border border-gray-100 transition transform duration-700 hover:shadow-xl hover:scale-105 p-1 rounded-lg relative">
             {/* <span className="bg-red-100 border border-red-500 rounded-full text-primary text-sm poppins px-4 py-1 inline-block mb-4 ">khjbh</span> */}
-            <img className="w-64 mx-auto transform transition duration-300 hover:scale-105 object-scale-down h-48 w-96" src={image} alt="" />
-            <div className="flex flex-col items-center my-3 space-y-2">
-                <h1 className="text-gray-900 poppins text-2xl">{name}</h1>
-                <p className=" text-gray-500 poppins text-sm text-center">{description}</p>
-                <h2 className="text-gray-900 poppins text-2xl font-bold">₹{price}</h2>
+            <img className="mx-auto h-20 transform transition duration-300 hover:scale-105 object-scale-down" src={image} alt="" />
+            <div className="flex flex-col items-center my-3">
+                <h1 className="h-5 text-center text-gray-900 poppins text-sm" style={{ fontSize: '0.6rem',lineHeight: '1'}}>{name}</h1>
+                <p className="h-20 text-gray-500 poppins text-xs text-center my-2" style={{ fontSize: '0.5rem'  ,lineHeight: '1.4'}}>{description}</p>
+                <h2 className="text-gray-900 poppins text-xs font-bold my-1" >₹{price}</h2>
                 <button
             onClick={Navigate_SubscribeMessPage}
-            className="bg-cyan-600 lg:text-2xl inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">Subscribe</button>
+            className="bg-cyan-600 lg:text-xs inline-flex items-center justify-center text-xs p-1 font-medium text-center text-white rounded-lg focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800" style={{ fontSize: '0.5rem'}}>Subscribe</button>
             </div>
         </div>
   );

@@ -6,12 +6,12 @@ import Navbar from './Navbar';
 
 const containerStyle = {
   width: '100%',
-  height: '800px'
+  height: '520px'
 };
 
 const center = {
-  lat: 22.710,
-  lng: 75.8577
+  lat: 22.722662,
+  lng: 75.884297
 };
 
 const DeliveryMap = () => {
@@ -22,6 +22,8 @@ const DeliveryMap = () => {
   const [mess_users, update_mess_users] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const[mess_loc, update_mess_loc]= useState([]);
+  const [coordinates, setCoordinates] = useState({ lat: 22.719534, lng: 75.873452 });
+  const [mapCenter, setMapCenter] = useState(center);
 
 
   const cookies = new Cookies();
@@ -30,7 +32,7 @@ const DeliveryMap = () => {
   const fetch_mess_id = async () => {
     await 
     axios
-      .post("http://localhost:5000/Delivery_boy/fetch_mess_id/",
+      .post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/fetch_mess_id/",
       {
         "deliver_id":deliver_id
       })
@@ -45,10 +47,14 @@ const DeliveryMap = () => {
       });
   };
 
+  useEffect(() => {
+    console.log('New coordinates:', coordinates);
+  }, [coordinates]);
+
   const fetch_mess_users = async () => {
     await 
     axios
-      .post("http://localhost:5000/Delivery_boy/fetch_mess_users/",
+      .post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/fetch_mess_users/",
       {
         "Mess_id":Mess_id.id
       })
@@ -60,7 +66,7 @@ const DeliveryMap = () => {
 
   const fetch_mess_loc = async()=> {
     await axios
-      .post("http://localhost:5000/Delivery_boy/fetch_mess_loc/",
+      .post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/fetch_mess_loc/",
         {
           "Mess_id": Mess_id.id
         })
@@ -70,9 +76,24 @@ const DeliveryMap = () => {
       });
   }
 
+  const getCurrentPosition = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCoordinates({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setMapCenter(coordinates);
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
   useEffect(() => {
     fetch_mess_id();
   }, []);
+
 
   useEffect(() => {
     if (Mess_id) {
@@ -139,10 +160,11 @@ const DeliveryMap = () => {
     }
   }
 
+  
+
   const handleOnClick = () => {
     setRouteFetched(true);
     setResponse(null);
-
     console.log(waypoints);
 
   }
@@ -153,11 +175,25 @@ const DeliveryMap = () => {
     <LoadScript
       googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
     > 
+    <div>
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={center}
-        zoom={13.5}
-      > 
+        center={mapCenter}
+        zoom={12}
+      >
+  {
+  coordinates && (
+    <Marker
+      key={`${coordinates.lat}-${coordinates.lng}`}
+      position={coordinates}
+      title="This is delivery boy location."
+      icon={{
+        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+      }}
+    />
+  )
+}
+
         {
           routeFetched && response === null && (
             <DirectionsService
@@ -171,6 +207,7 @@ const DeliveryMap = () => {
             />
           )
         }
+        
   
         {
           response !== null && (
@@ -220,12 +257,14 @@ const DeliveryMap = () => {
           )
         }
       </GoogleMap>
-      
-      <button onClick={handleOnClick} style={{backgroundColor: 'blue', color: 'white', padding: '5px 10px', fontSize: '12px'}}>
-  Show Route
-</button>
-
-      
+      </div>
+      <button
+          onClick={handleOnClick}
+          className="bg-teal-500 text-white px-4 py-2 mx-2 mb-7 rounded-md focus:outline-none float-left mr-4"
+        >
+          Map Route
+        </button>
+        <button class="real button" onClick={getCurrentPosition}>Fetch Location</button>
     </LoadScript></section>
   )
 }
