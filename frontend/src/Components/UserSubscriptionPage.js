@@ -15,7 +15,7 @@ function UserSubscriptionPage() {
 
           const User_id = cookies.get("User").User_id;
           await axios
-            .post("https://apnamess-11-04-24-1.onrender.com/Customer/View_subscribed_mess/",
+            .post("http://localhost:5000/Customer/View_subscribed_mess/",
             {
               "customer_id": User_id
             })

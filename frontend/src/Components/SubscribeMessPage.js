@@ -14,28 +14,49 @@ function SubscribeMessPage(props) {
     const {mess_id,price,name}= state;
     console.log(price);
 
-    const subscribe = async(e) =>{
-        const {name} = e.target;
-        const user_id = cookies.get("User").User_id;
+    const initPayment = (data,months) => {
+		const options = {
+			key: "rzp_test_7XkaKD6uJ4qEsm",
+			amount: data.amount,
+			currency: data.currency,
+			name: "item",
+			description: "Test Transaction",
+			// image: book.img,
+			order_id: data.id,
+			handler: async (response) => {
+				try {
+					const verifyUrl = "http://localhost:5000/Customer/verify";
+					await axios.post(verifyUrl, {response,months,mess_id,user_id:cookies.get("User").User_id})
+                    .then((res) => {
+                         alert("Successfully Subscribed to Mess!");
+                         navigate("../tiffin"); });
 
-        await axios
-            .post("https://apnamess-11-04-24-1.onrender.com/Customer/Subscribe_mess", 
-            {
-                "customer_id":user_id, 
-                "Mess_id":mess_id, 
-                "Remaining_token": name*30,
-                "subscription_validity": name
-            })
-            .then((res) => {
-              alert(res.data);
-              navigate("/tiffin");
-            })
-            .catch((err) => {
-              alert("Incorrect Email or Password ");
-            });
+				} catch (err) {
+					if (err.response && err.response.data) {
+                    alert(err.response.data);}
+				}
+			},
+			theme: {
+				color: "#3399cc",
+			},
+		};
+		const rzp1 = new window.Razorpay(options);
+		rzp1.open();
+	};
 
-    }
-
+    const handlePayment = async (price,months) => {
+    
+		try {
+			const orderUrl = "http://localhost:5000/Customer/order";
+			const { data } = await axios.post(orderUrl, { amount: price,customer_id:cookies.get("User").User_id,Mess_id:mess_id});
+			console.log(data);
+			initPayment(data.data,months);
+		} catch (err) {
+			if (err.response && err.response.data) {
+        alert(err.response.data);}
+		}
+	};
+    
   return (
     <div className='bg-cyan-600'>
     <MessHeading/>    
@@ -74,7 +95,7 @@ function SubscribeMessPage(props) {
 
                 <div class="pt-[10px] px-[18px] pb-[10px]">
                     <div class="">
-                        <button onClick={subscribe} name="1" class="bg-[#006EF5] rounded-[5px] py-[8px] px-[13px] text-[#fff] text-[14px] leading-[17px] font-semibold">Subscribe</button>
+                        <button onClick={()=>{handlePayment(price,1)}} name="1" class="bg-[#006EF5] rounded-[5px] py-[8px] px-[13px] text-[#fff] text-[14px] leading-[17px] font-semibold">Subscribe</button>
                     </div>
                     
                 </div>
@@ -109,7 +130,7 @@ function SubscribeMessPage(props) {
                 <div class="pt-[10px] px-[18px] pb-[10px]">
                    
                     <div class="">
-                        <button onClick={subscribe} name="3" class="bg-[#006EF5] rounded-[5px] py-[8px] px-[13px] text-[#fff] text-[14px] leading-[17px] font-semibold">Subscribe</button>
+                        <button onClick={()=>{handlePayment(3*price-500,3)}} name="3" class="bg-[#006EF5] rounded-[5px] py-[8px] px-[13px] text-[#fff] text-[14px] leading-[17px] font-semibold">Subscribe</button>
                     </div>
                 </div>
             </div>
@@ -143,7 +164,7 @@ function SubscribeMessPage(props) {
                 <div class="pt-[10px] px-[18px] pb-[10px]">
 
                     <div class="">
-                        <button onClick={subscribe} name="6" class="bg-[#006EF5] rounded-[5px] py-[8px] px-[13px] text-[#fff] text-[14px] leading-[17px] font-semibold">Subscribe</button>
+                        <button onClick={()=>{handlePayment(6*price-1500,6)}} name="6" class="bg-[#006EF5] rounded-[5px] py-[8px] px-[13px] text-[#fff] text-[14px] leading-[17px] font-semibold">Subscribe</button>
                     </div>
                 </div>
             </div>

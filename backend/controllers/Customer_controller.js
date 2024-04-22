@@ -1,4 +1,82 @@
 import client from "../db.js";
+import Razorpay from "razorpay";
+import crypto from "crypto";
+
+
+
+export const order = async(req,res) => {
+
+    // check if subscription already exist
+
+    const { customer_id, Mess_id} = req.body;
+
+    let exists;
+    try {
+      exists = await client.query("Select * from Subscription where customer_id = $1 and Mess_id = $2",
+      [
+        customer_id,Mess_id
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+    
+    if(exists.rowCount!==0)
+    {
+      return res.status(400).send("Cannot Subscribe to same mess multiple times!");
+    }
+
+    try {
+		const instance = new Razorpay({
+			key_id: process.env.KEY_ID,
+			key_secret: process.env.KEY_SECRET,
+		});
+
+		const options = {
+			amount: req.body.amount * 100,
+			currency: "INR",
+			receipt: crypto.randomBytes(10).toString("hex"),
+		};
+
+		instance.orders.create(options, (error, order) => {
+			if (error) {
+				console.log(error);
+				return res.status(500).json({ message: "Something Went Wrong!" });
+			}
+			res.status(200).json({ data: order });
+		});
+	} catch (error) {
+		res.status(500).json({ message: "Internal Server Error!" });
+		console.log(error);
+	}
+  }
+
+  export const verify = async(req,res) => {
+
+    try {
+		const { razorpay_order_id, razorpay_payment_id, razorpay_signature, months , mess_id,user_id} =
+			req.body;
+		const sign = razorpay_order_id + "|" + razorpay_payment_id;
+		const expectedSign = crypto
+			.createHmac("sha256", process.env.KEY_SECRET)
+			.update(sign.toString())
+			.digest("hex");
+
+      let exists;
+      try {
+      exists = await client.query("INSERT INTO Subscription(customer_id,Mess_id,Remaining_token,subscription_validity,Daily_tokens,Subscription_date) VALUES($1,$2,$3,$4,1,CURRENT_DATE);", [
+      user_id, mess_id, months*30,months
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+    console.log(exists.rows);
+    res.status(200).send("Successfully Subscribed!");
+		
+	} catch (error) {
+		res.status(400).send("Payment failed ");
+		console.log(error);
+	}
+  }
 
 export const View_mess = async (req, res) => {
 
@@ -28,36 +106,39 @@ export const View_mess = async (req, res) => {
   };
 
 
+  
 
-  export const Subscribe_mess = async (req, res) => {
-    const { customer_id, Mess_id, Remaining_token,subscription_validity} = req.body;
 
-    let exists;
-    try {
-      exists = await client.query("Select * from Subscription where customer_id = $1 and Mess_id = $2",
-      [
-        customer_id,Mess_id
-      ]);
-    } catch (err) {
-      console.log(err);
-    }
+
+  // export const Subscribe_mess = async (req, res) => {
+  //   const { customer_id, Mess_id, Remaining_token,subscription_validity} = req.body;
+
+  //   let exists;
+  //   try {
+  //     exists = await client.query("Select * from Subscription where customer_id = $1 and Mess_id = $2",
+  //     [
+  //       customer_id,Mess_id
+  //     ]);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
     
-    if(exists.rowCount!==0)
-    {
-      res.send("Cannot Subscribe same mess multiple times.");
-    }else
-    {
-        try {
-      exists = await client.query("INSERT INTO Subscription(customer_id,Mess_id,Remaining_token,subscription_validity,Daily_tokens,Subscription_date) VALUES($1,$2,$3,$4,1,CURRENT_DATE);", [
-      customer_id, Mess_id, Remaining_token,subscription_validity
-      ]);
-    } catch (err) {
-      console.log(err);
-    }
-    console.log(exists.rows);
-    res.status(200).send("Successfully Subscribed!");
-    }
-  };
+  //   if(exists.rowCount!==0)
+  //   {
+  //     res.send("Cannot Subscribe same mess multiple times.");
+  //   }else
+  //   {
+  //       try {
+  //     exists = await client.query("INSERT INTO Subscription(customer_id,Mess_id,Remaining_token,subscription_validity,Daily_tokens,Subscription_date) VALUES($1,$2,$3,$4,1,CURRENT_DATE);", [
+  //     customer_id, Mess_id, Remaining_token,subscription_validity
+  //     ]);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  //   console.log(exists.rows);
+  //   res.status(200).send("Successfully Subscribed!");
+  //   }
+  // };
   
   // use to alert user that subscription is about to end 
   export const Remaining_Daily_tokens = async (req,res) => {
@@ -80,6 +161,21 @@ export const View_mess = async (req, res) => {
 
   // when user changes number of tiffins per day
   export const Change_daily_tokens = async (req, res) => {
+
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
+
+    console.log(currentHour);
+    console.log("shdjkfhkdjfsd");
+    
+    // Check if current time is between 10 am to 1 pm (10 - 13)
+    if (currentHour >= 9 && currentHour < 12) {
+      return res.status(400).send("Tokens cannot be updated between 10 am to 12 pm.");
+    }
+    else if(currentHour >= 17 && currentHour < 19){
+      return res.status(400).send("Tokens cannot be updated between 5 pm to 7 pm.");
+    }
+
     const { customer_id,Mess_id,Daily_tokens} = req.body;
     let exists;
     try

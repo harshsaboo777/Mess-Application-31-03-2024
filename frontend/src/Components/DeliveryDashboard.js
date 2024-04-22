@@ -1,3 +1,5 @@
+
+
 import { XIcon } from '@heroicons/react/solid';
 import MessHeading from './MessHeading';
 import Footer from './Footer';
@@ -29,7 +31,7 @@ const DeliveryAgentDashboard = () => {
   },[current_mess]);
 
   const fetch_current_mess = async () => {
-    await axios.post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/fetch_current_mess/", {
+    await axios.post("http://localhost:5000/Delivery_boy/fetch_current_mess/", {
       "agent_id":User_id
     })
     .then((res) => {
@@ -38,7 +40,7 @@ const DeliveryAgentDashboard = () => {
   };
 
   const fetch_hire_requests = async () => {
-    await axios.post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/fetch_hire_requests/", {
+    await axios.post("http://localhost:5000/Delivery_boy/fetch_hire_requests/", {
       "agent_id":User_id
     })
     .then((res) => {
@@ -47,7 +49,7 @@ const DeliveryAgentDashboard = () => {
   };
 
   const fetch_mess_users = async () => {
-    await axios.post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/View_mess_users/", {
+    await axios.post("http://localhost:5000/Mess_owner/View_mess_users/", {
       "Mess_id":current_mess[0].mess_id
     })
     .then((res) => {
@@ -56,7 +58,7 @@ const DeliveryAgentDashboard = () => {
   };
 
   const handleAcceptRequest = async (mess_id) => {
-    await axios.post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/accept_request/", {
+    await axios.post("http://localhost:5000/Delivery_boy/accept_request/", {
       "Mess_id":mess_id,
       agent_id: User_id
     });
@@ -64,7 +66,7 @@ const DeliveryAgentDashboard = () => {
   };
 
   const handleRejectRequest = async (mess_id) => {
-    await axios.post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/delete_request/", {
+    await axios.post("http://localhost:5000/Delivery_boy/delete_request/", {
       "Mess_id":mess_id,
       agent_id: User_id
     });
@@ -93,77 +95,47 @@ const DeliveryAgentDashboard = () => {
           </button>
         </div>}
 
-        <div className="relative mb-8">
+        <div className="relative mb-8 flex justify-end space-x-4">
           <button
             onClick={() => setShowRequests(!showRequests)}
-            className="bg-teal-500 text-white px-4 py-2 mx-2 mb-7 rounded-md focus:outline-none float-right mr-4"
+            className="bg-teal-500 text-white px-4 py-2 rounded-md focus:outline-none"
           >
             Show Requests {showRequests && `(${hire_request.length})`}
           </button>
-
-          {showRequests && (
-            <div className="absolute top-20 right-0  w-80 bg-teal-100 rounded-md shadow-md overflow-hidden">
-              <ul className="divide-y divide-teal-200">
-                {hire_request.map(request => (
-                  <li className="px-4 py-2 m-2 hover:bg-teal-200 flex justify-between items-center">
-                    <p className="text-teal-800">{request.mess_name}</p>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => {
-                          if(current_mess.length==0)
-                          {
-                              handleAcceptRequest(request.mess_id);
-                          }else
-                          {
-                              alert("You are already working for a mess!");
-                          }
-                        }}
-                        className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 focus:outline-none"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() => {
-                        
-                        }}
-                        className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 focus:outline-none"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-        <button
+          <button
             onClick={handleMap}
-            className="bg-teal-500 text-white px-4 py-2 mx-2 mb-7 rounded-md focus:outline-none float-right mr-4"
+            className="bg-teal-500 text-white px-4 py-2 rounded-md focus:outline-none"
           >
             View Map
           </button>
-
-        <table className="w-full bg-white shadow-md rounded-md overflow-hidden">
-          <thead className="bg-teal-500 text-white">
-            <tr>
-              <th className="px-6 py-3">Customer Name</th>
-              <th className="px-6 py-3">Customer Address</th>
-              <th className="px-6 py-3">Contact Number</th>
-              <th className="px-6 py-3">Daily_tokens</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mess_users.map(ele => (
-              <tr key={ele.id} className="border-t hover:bg-teal-50">
-                <td className="px-6 py-4 text-center">{ele.fname } {ele.lname}</td>
-                <td className="px-6 py-4 text-center">{ele.user_address}</td>
-                <td className="px-6 py-4 text-center">+91 {ele.phone_num}</td>
-                <td className="px-6 py-4 text-center">{ele.daily_tokens }</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        </div>
+        <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+<h2 className="bg-cyan-400 text-xl font-bold text-gray-900 px-6 py-4 border-b border-gray-200 text-center">Mess Subscribers</h2>
+<div className="overflow-x-auto">
+  <table className="w-full divide-y divide-cyan-200 text-xs">
+    <thead className="bg-cyan-100 dark:bg-cyan-700">
+      <tr className="">
+        <th className="px-2 md:px-3 py-2 md:py-3 font-semibold text-gray-600 uppercase tracking-wider text-center">Customer Name</th>
+        <th className="px-2 md:px-3 py-2 md:py-3 font-semibold text-gray-600 uppercase tracking-wider text-center">Customer Address</th>
+        <th className="px-2 md:px-3 py-2 md:py-3 font-semibold text-gray-600 uppercase tracking-wider text-center">Contact Number</th>
+        <th className="px-2 md:px-3 py-2 md:py-3 font-semibold text-gray-600 uppercase tracking-wider text-center">Daily Tokens</th>
+      </tr>
+    </thead>
+    <tbody className="bg-cyan-100 divide-y divide-gray-200">
+      {mess_users.map((ele) => (
+        <tr key={ele.id}>
+          <td className="px-2 md:px-3 py-2 md:py-3 whitespace-nowrap text-center">{ele.fname} {ele.lname}</td>
+          <td className="px-2 md:px-3 py-2 md:py-3 whitespace-nowrap text-center">{ele.user_address}</td>
+          <td className="px-2 md:px-3 py-2 md:py-3 whitespace-nowrap text-center">+91 {ele.phone_num}</td>
+          <td className="px-2 md:px-3 py-2 md:py-3 whitespace-nowrap text-center">{ele.daily_tokens}</td>
+        </tr>
+      ))}
+      {/* Add more rows as needed */}
+    </tbody>
+  </table>
+</div>
+</div>
+        
         <Footer/>
       </div>
     </>
@@ -171,8 +143,6 @@ const DeliveryAgentDashboard = () => {
 };
 
 export default DeliveryAgentDashboard;
-
-
 
 
 

@@ -32,7 +32,7 @@ const DeliveryMap = () => {
   const fetch_mess_id = async () => {
     await 
     axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/fetch_mess_id/",
+      .post("http://localhost:5000/Delivery_boy/fetch_mess_id/",
       {
         "deliver_id":deliver_id
       })
@@ -54,7 +54,7 @@ const DeliveryMap = () => {
   const fetch_mess_users = async () => {
     await 
     axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/fetch_mess_users/",
+      .post("http://localhost:5000/Delivery_boy/fetch_mess_users/",
       {
         "Mess_id":Mess_id.id
       })
@@ -66,7 +66,7 @@ const DeliveryMap = () => {
 
   const fetch_mess_loc = async()=> {
     await axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Delivery_boy/fetch_mess_loc/",
+      .post("http://localhost:5000/Delivery_boy/fetch_mess_loc/",
         {
           "Mess_id": Mess_id.id
         })
@@ -169,12 +169,30 @@ const DeliveryMap = () => {
 
   }
 
+  const openGoogleMaps = () => {
+    const origin = `${mess_loc.lat},${mess_loc.log}`;
+    const destination = `${mess_loc.lat},${mess_loc.log}`;
+
+    const waypointsString = waypoints.map(waypoint => `${waypoint.location.lat},${waypoint.location.lng}`).join('|');
+
+    const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypointsString}&travelmode=driving`;
+
+    // Open the URL in a new tab or window
+    window.open(url, '_blank');
+  };
+
   return (
     <section>
       <Navbar/>
     <LoadScript
       googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
     > 
+         <button
+          onClick={openGoogleMaps}
+          className="bg-teal-500 text-white px-4 py-2 mx-2 mb-7 rounded-md focus:outline-none float-left mr-4"
+        >
+          Start Navigation with Google Maps
+        </button>
     <div>
       <GoogleMap
         mapContainerStyle={containerStyle}

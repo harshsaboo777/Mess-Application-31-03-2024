@@ -19,13 +19,25 @@ const SignUp = () => {
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
+  
+    // Check if the input is valid
+    if ((name === "Fname" || name === "Lname") && /[^a-zA-Z]/.test(value)) {
+      alert("Only alphabets are allowed in the first name and last name.");
+      return;
+    }
+    if (name === "Phone_num" && /[^0-9]/.test(value)) {
+      alert("Only numbers are allowed in the phone number.");
+      return;
+    }
+  
     setuser({
       ...user,
       [name]: value,
-      "lat" : 22.225003,
+      "lat" : 22.725003,
       "log" : 75.874180
     });
   };
+  
 
   const handleChangetype = (e) =>{
     const {value} = e.target;
@@ -36,40 +48,57 @@ const SignUp = () => {
   }
 
   const handleSubmit = (e) => {
-    if (
-      user.Fname !== "" &&
-      user.Lname !== "" &&
-      user.User_address !== "" &&
-      user.Phone_num !== "" &&
-      user.Email !== "" &&
-      user.Password !== ""&& 
-      user.User_type !== ""&&
-      user.lat !== "" &&
-      user.log !== ""
-        ) {
-           console.log(user);
-          e.preventDefault();
-          axios
-            .post("https://apnamess-11-04-24-1.onrender.com/auth/signUp", user)
-            .then((res) => {
-               console.log(res.data);
-              alert(res.data);
-    
-              if(user.User_type==3)
-              {
-                const user_id = res.data.user_id;
-                // console.log(user_id);
-                navigate("/MessRegistration", { replace: true, state: {user_id} });
-              }
-              else{navigate("/login");}
-            })
-            .catch((err) => {
-              alert("Email Already in use");
-            });
-        } else {
-          alert("Invalid Inputs");
+    e.preventDefault();
+  
+    // Validation checks
+    if (user.Fname.length <= 2) {
+      alert("First name should have atleast 3 letters.");
+      return;
+    }
+    if (user.Lname.length <= 2) {
+      alert("Last name should have atleast 3 letters.");
+      return;
+    }
+    if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(user.Email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+    if (user.Phone_num.length !== 10) {
+      alert("Mobile number should be exactly 10 digits.");
+      return;
+    }
+    if (user.User_address.length < 6) {
+      alert("Address should be of minimum 6 letters.");
+      return;
+    }
+    if (user.Password.length < 6) {
+      alert("Password should be of minimum 6 letters.");
+      return;
+    }
+    if (!user.User_type) {
+      alert("Please select a user type.");
+      return;
+    }
+  
+    // If all validations pass, make the API request
+    axios
+      .post("http://localhost:5000/auth/signUp", user)
+      .then((res) => {
+        console.log(res.data);
+        alert(res.data);
+  
+        if(user.User_type==3)
+        {
+          const user_id = res.data.user_id;
+          navigate("/MessRegistration", { replace: true, state: {user_id} });
         }
-      };
+        else{navigate("/login");}
+      })
+      .catch((err) => {
+        alert("Email Already in use");
+      });
+  };
+  
       return (
         <React.Fragment>
           <div className={styles.container}>
@@ -151,12 +180,12 @@ const SignUp = () => {
                     name="submit"
                     onClick={handleSubmit}
                   >
-                    Login
+                    SignUp
                   </button>
                 </div>
                 <p className={styles.loginregistertext}>
                   Already have an account?{" "}
-                  <button onClick={() => navigate("/login")}> Sign In</button>
+                  <button onClick={() => navigate("/login")}> Login</button>
                 </p>
               </div>
             </div>

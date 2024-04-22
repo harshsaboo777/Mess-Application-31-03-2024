@@ -46,7 +46,7 @@ const UpdateAddress = () => {
   
   const handleSubmit = () => {
     axios
-    .post("https://apnamess-11-04-24-1.onrender.com/Customer/update_address/", {
+    .post("http://localhost:5000/Customer/update_address/", {
       "User_id": User_id,
       "lat": parseFloat(location.lat.toFixed(6)),
       "lng": parseFloat(location.lng.toFixed(6)),

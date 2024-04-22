@@ -29,7 +29,7 @@ function MessHeading2() {
   const fetch_status = async (e) => {
     await 
     axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_status/",
+      .post("http://localhost:5000/Mess_owner/fetch_status/",
       {
         "Mess_id":Mess_id
       })
@@ -41,7 +41,7 @@ function MessHeading2() {
   const toggle_status = async(e)=>{
     await 
     axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/toggle_status/",
+      .post("http://localhost:5000/Mess_owner/toggle_status/",
       {
         "Mess_id":Mess_id
       })
@@ -54,7 +54,7 @@ function MessHeading2() {
   const fetch_mess_id = async (e) => {
     await 
     axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_mess_id/",
+      .post("http://localhost:5000/Mess_owner/fetch_mess_id/",
       {
         "User_id":User_id
       })

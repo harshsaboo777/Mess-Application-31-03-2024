@@ -37,10 +37,6 @@ export const View_mess_users = async (req, res) => {
     res.status(200).send("Successfully Address Updated");
   };
 
-  
-
-
-
   export const fetch_total_tokens = async (req, res) => {
 
     const {Mess_id} = req.body;

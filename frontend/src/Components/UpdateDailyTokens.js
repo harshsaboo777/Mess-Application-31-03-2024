@@ -19,7 +19,7 @@ export default function UpdateDailyTokens(props) {
   const handleSubmit = (props)=>{
 
     axios
-        .post("https://apnamess-11-04-24-1.onrender.com/Customer/Change_daily_tokens",
+        .post("http://localhost:5000/Customer/Change_daily_tokens",
         {
           "customer_id" : User_id,
           "Mess_id": mess_id,
@@ -31,7 +31,11 @@ export default function UpdateDailyTokens(props) {
           handleOpen()
         })
         .catch((err) => {
-          alert("Inadequate amount of Tokens left");
+          if (err.response && err.response.data) {
+        alert(err.response.data); // Display custom error message from server
+      } else {
+        alert("An error occurred while updating tokens.");
+      }
         });
   }
 

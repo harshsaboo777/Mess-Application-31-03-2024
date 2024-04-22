@@ -22,28 +22,28 @@ export default function MessOwnersSubcribers() {
   };
 
   const fetch_mess_id = async () => {
-    const res = await axios.post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_mess_id/", {
+    const res = await axios.post("http://localhost:5000/Mess_owner/fetch_mess_id/", {
       "User_id": User_id
     });
     update_Mess_id(res.data.mess_id);
   };
 
   const fetch_agents = async () => {
-    const res = await axios.post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_agents/", {
+    const res = await axios.post("http://localhost:5000/Mess_owner/fetch_agents/", {
       Mess_id: Mess_id
     });
     update_agents(res.data);
   };
 
   const fetch_mess_users = async () => {
-    const res = await axios.post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/View_mess_users/", {
+    const res = await axios.post("http://localhost:5000/Mess_owner/View_mess_users/", {
       "Mess_id": Mess_id
     });
     update_mess_users(res.data);
   };
 
   const fetch_total_tokens = async () => {
-    const res = await axios.post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_total_tokens/", {
+    const res = await axios.post("http://localhost:5000/Mess_owner/fetch_total_tokens/", {
       "Mess_id": Mess_id
     });
     set_total_tokens(res.data[0].sum);
@@ -51,7 +51,7 @@ export default function MessOwnersSubcribers() {
 
   const send_request = async (new_agent_id) => {
     try {
-      const res = await axios.post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/send_request/", {
+      const res = await axios.post("http://localhost:5000/Mess_owner/send_request/", {
         "Mess_id": Mess_id,
         "agent_id": new_agent_id
       });

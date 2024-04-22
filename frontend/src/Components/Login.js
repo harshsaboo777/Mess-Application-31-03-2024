@@ -32,7 +32,7 @@ const Login = () => {
     if (user.Email !== "" && user.Password !== "" && user.User_type !== "") {
       e.preventDefault();
       await axios
-        .post("https://apnamess-11-04-24-1.onrender.com/auth/login", user)
+        .post("http://localhost:5000/auth/login", user)
         .then((res) => {
           alert("You are now Logged in.");
           user.User_id = res.data.user_id;

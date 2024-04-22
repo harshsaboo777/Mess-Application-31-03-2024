@@ -33,52 +33,53 @@ function MessTiffins() {
   const [tiffin, set_tiffin] = useState([]);
   const [filteredMessList, setFilteredMessList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [location_filter,set_location_filter] = useState(0);
-  const fetchMess = async (e) => {
-    await axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Customer/View_mess/")
-      .then((res) => {
-        set_tiffin(res.data);
-      });
-  };
+  const [messlist, setMessList]= useState([]);
+ 
+
+
+  // const fetchMess = async (e) => {
+  //   await axios
+  //     .post("http://localhost:5000/Customer/View_mess/")
+  //     .then((res) => {
+  //       set_tiffin(res.data);
+  //     });
+  // };
 
   const fetchNearbyMess = async(e) => {
     await axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Customer/fetchNearbyMess/",
+      .post("http://localhost:5000/Customer/fetchNearbyMess/",
       {
         "user_id": user_id 
       })
       .then((res) => {
         setFilteredMessList(res.data);
+        setMessList(res.data);
       });
   }
-  useEffect(() => {
-		fetchMess();
-	}, []);
+
+  useEffect(() =>{
+    fetchNearbyMess();
+  },[]);
 
    useEffect(() => {
-		setFilteredMessList(tiffin);
-	}, [tiffin]);
+		setFilteredMessList(filteredMessList);
+	}, []);
+
 
   const handleSearch = () => {
     const term = searchTerm.toLowerCase();
     setSearchTerm(term);
-    const filtered = tiffin.filter(mess =>
-      (mess.mess_name && mess.mess_name.toLowerCase().includes(term))
+    const filtered = messlist.filter(mess =>
+      ((mess.mess_name && mess.mess_name.toLowerCase().includes(term) )|| (mess.tiffin_details && mess.tiffin_details.toLowerCase().includes(term)))
     );
     setFilteredMessList(filtered);
   };
 
   const handleClearSearch = () => {
     setSearchTerm('');
-    set_location_filter(0);
-    setFilteredMessList(tiffin);
+    //setFilteredMessList(messlist);
   };
 
-  const handlleclick34=()=>{
-    set_location_filter(1);
-    fetchNearbyMess();
-  }
   return (
     <div className="bg-cyan-600">
       <MessHeading />
@@ -96,7 +97,7 @@ function MessTiffins() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border border-gray-300 rounded-l-md px-4 py-2 w-full focus:outline-none"
         />
-        {(searchTerm ||location_filter) ? ( // Display cross icon only when search term is not empty
+        {(searchTerm) ? ( // Display cross icon only when search term is not empty
           <button
             onClick={handleClearSearch}
             className="bg-gray-200 text-gray-600 hover:text-gray-800 focus:outline-none  px-2 py-2"
@@ -110,15 +111,7 @@ function MessTiffins() {
         >
           Search
         </button>
-        <button
-          onClick={handlleclick34}
-          className="flex items-center justify-center border border-gray-300 bg-orange-400 text-white text-xs font-semibold px-2 py-2 rounded-r-md focus:outline-none"
-        >
-          <BiSolidMapPin style = {{ color: "dodgerblue", fontSize: "1.2rem" }}/>
-        </button>
       </div>
-
-
       <div className="slider-container">
               
       <Slider {...settings}>

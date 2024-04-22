@@ -20,7 +20,7 @@ const ProfileMess = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.post('https://apnamess-11-04-24-1.onrender.com/Customer/fetch_profile', {
+      const res = await axios.post('http://localhost:5000/Customer/fetch_profile', {
         User_id: User.User_id,
       });
       setProfile(res.data);
@@ -31,7 +31,7 @@ const ProfileMess = () => {
 
   const fetchRating = async () => {
     try {
-      const res = await axios.post('https://apnamess-11-04-24-1.onrender.com/Customer/View_mess_rating',{
+      const res = await axios.post('http://localhost:5000/Customer/View_mess_rating',{
         Mess_id: Mess_id,
       });
       setrating(+res.data.average);
@@ -44,7 +44,7 @@ const ProfileMess = () => {
 
   const fetchMenu = async () => {
     try {
-      const res = await axios.post('https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_menu', {
+      const res = await axios.post('http://localhost:5000/Mess_owner/fetch_menu', {
         User_id: User.User_id,
       });
       setMenu(res.data.tiffin_details);
@@ -59,7 +59,7 @@ const ProfileMess = () => {
 
   const updateMenu = async () => {
     try {
-      const res = await axios.post('https://apnamess-11-04-24-1.onrender.com/Mess_owner/update_menu', {
+      const res = await axios.post('http://localhost:5000/Mess_owner/update_menu', {
         User_id: User.User_id,
         newMenu: selectedTags,
       });
@@ -74,7 +74,7 @@ const ProfileMess = () => {
     // console.log("messssss"+User_id);
     await 
     axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_mess_id/",
+      .post("http://localhost:5000/Mess_owner/fetch_mess_id/",
       {
         "User_id":User.User_id
       })

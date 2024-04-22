@@ -38,7 +38,7 @@ const navRef = useRef();
 
   const fetchnew = async (e) => {
     await axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Customer/fetch_new/", {
+      .post("http://localhost:5000/Customer/fetch_new/", {
         "customer_id": User.User_id
       })
       .then((res) => {
@@ -71,7 +71,7 @@ const navRef = useRef();
 
   const fetch_profile = async (e) => {
     await axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Customer/fetch_profile/",{
+      .post("http://localhost:5000/Customer/fetch_profile/",{
         "User_id" :User.User_id,
       })
       .then((res) => {

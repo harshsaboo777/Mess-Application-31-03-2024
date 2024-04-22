@@ -11,7 +11,7 @@ const Ratings = (props) => {
 	const give_rating = async (givenRating) => {
 
           await axios
-            .post("https://apnamess-11-04-24-1.onrender.com/Customer/Rate_Mess/",
+            .post("http://localhost:5000/Customer/Rate_Mess/",
             {
               "User_id": User_id,
 			  "Mess_id": mess_id,

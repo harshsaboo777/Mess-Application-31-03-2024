@@ -8,7 +8,7 @@ const Dismiss = (props) => {
   const handleDismiss = async (e) => {
     await 
     axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/remove_agent/",
+      .post("http://localhost:5000/Mess_owner/remove_agent/",
       {
         "Mess_id":Mess_id
       })
@@ -22,7 +22,7 @@ const Dismiss = (props) => {
   const fetch_current_agent = async (e) => {
     await 
     axios
-      .post("https://apnamess-11-04-24-1.onrender.com/Mess_owner/fetch_current_agent/",
+      .post("http://localhost:5000/Mess_owner/fetch_current_agent/",
       {
         "Mess_id":Mess_id
       })
